@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert to dry matter basis and/or ash free dry matter basis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: none;
+        }
+        .nutrient-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .nutrient-row input, .nutrient-row select {
+            width: 100%;
+        }
+        .nutrient-row label {
+            min-width: 0;
+        }
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            width: auto;
+        }
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+        .add-btn {
+            background-color: #007bff;
+        }
+        .add-btn:hover {
+            background-color: #0056b3;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .results-table th, .results-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .results-table th {
+            background-color: #f2f2f2;
+        }
+        .header-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .header-row div {
+            padding: 8px;
+        }
+        .basis-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .basis-selector label {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .basis-selector input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        .ash-content {
+            display: none;
+        }
+        .download-btn {
+            background-color: #28a745;
+            margin-top: 10px;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Convert to dry matter basis and/or ash free dry matter basis</h1>
+        <form id="converterForm">
+            <div class="basis-selector">
+                <label>
+                    <input type="checkbox" id="dryMatterBasis" checked> Convert to Dry Matter Basis
+                </label>
+                <label>
+                    <input type="checkbox" id="ashFreeBasis"> Convert to Ash-Free Dry Matter Basis
+                </label>
+            </div>
+
+            <div id="nutrientsContainer">
+                <h3>Nutrients</h3>
+                <div class="header-row">
+                    <div>Nutrient Label</div>
+                    <div>Value</div>
+                    <div>Moisture Content (%)</div>
+                    <div class="ash-content">Ash Content (%)</div>
+                    <div>Basis</div>
+                    <div>Input Unit</div>
+                    <div>Output Unit</div>
+                    <div>Original Value</div>
+                    <div>Dry Matter Value</div>
+                    <div class="ash-free-content">Ash-Free Value</div>
+                    <div></div>
+                </div>
+                <div class="nutrient-row">
+                    <input type="text" class="nutrient-label" placeholder="e.g., Protein, Fat, Fiber" required>
+                    <input type="number" class="nutrient-value" step="0.01" required>
+                    <input type="number" class="nutrient-moisture" step="0.01" required>
+                    <input type="number" class="nutrient-ash ash-content" step="0.01">
+                    <select class="nutrient-basis">
+                        <option value="wet">Wet Weight Basis</option>
+                        <option value="dry">Dry Weight Basis</option>
+                    </select>
+                    <select class="nutrient-input-unit">
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <select class="nutrient-output-unit">
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <input type="text" class="original-value" readonly>
+                    <input type="text" class="dry-matter-value" readonly>
+                    <input type="text" class="ash-free-value ash-free-content" readonly>
+                    <button type="button" class="remove-btn">Remove</button>
+                </div>
+            </div>
+
+            <button type="button" id="addNutrient" class="add-btn">Add Another Nutrient</button>
+            <button type="submit">Convert All</button>
+        </form>
+
+        <div id="result" class="result">
+            <h3>Results:</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Nutrient</th>
+                        <th>Original Value</th>
+                        <th>Dry Matter Value</th>
+                        <th class="ash-free-content">Ash-Free Value</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+            <button type="button" id="downloadPdf" class="download-btn">Download Results as PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle ash content fields visibility
+        document.getElementById('ashFreeBasis').addEventListener('change', function() {
+            const ashFields = document.querySelectorAll('.ash-content, .ash-free-content');
+            ashFields.forEach(field => {
+                field.style.display = this.checked ? 'block' : 'none';
+            });
+        });
+
+        // Add new nutrient row
+        document.getElementById('addNutrient').addEventListener('click', function() {
+            const container = document.getElementById('nutrientsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'nutrient-row';
+            newRow.innerHTML = `
+                <input type="text" class="nutrient-label" placeholder="e.g., Protein, Fat, Fiber" required>
+                <input type="number" class="nutrient-value" step="0.01" required>
+                <input type="number" class="nutrient-moisture" step="0.01" required>
+                <input type="number" class="nutrient-ash ash-content" step="0.01">
+                <select class="nutrient-basis">
+                    <option value="wet">Wet Weight Basis</option>
+                    <option value="dry">Dry Weight Basis</option>
+                </select>
+                <select class="nutrient-input-unit">
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="g/kg">g/kg</option>
+                    <option value="mg/kg">mg/kg</option>
+                    <option value="g/100g">g/100g</option>
+                    <option value="mg/100g">mg/100g</option>
+                </select>
+                <select class="nutrient-output-unit">
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="g/kg">g/kg</option>
+                    <option value="mg/kg">mg/kg</option>
+                    <option value="g/100g">g/100g</option>
+                    <option value="mg/100g">mg/100g</option>
+                </select>
+                <input type="text" class="original-value" readonly>
+                <input type="text" class="dry-matter-value" readonly>
+                <input type="text" class="ash-free-value ash-free-content" readonly>
+                <button type="button" class="remove-btn">Remove</button>
+            `;
+            container.appendChild(newRow);
+        });
+
+        // Remove nutrient row
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-btn')) {
+                const row = e.target.parentElement;
+                if (document.querySelectorAll('.nutrient-row').length > 1) {
+                    row.remove();
+                }
+            }
+        });
+
+        // Convert between units
+        function convertUnit(value, fromUnit, toUnit) {
+            // First convert to percentage as base unit
+            let percentageValue;
+            switch(fromUnit) {
+                case 'percentage':
+                    percentageValue = value;
+                    break;
+                case 'g/kg':
+                    percentageValue = value / 10;
+                    break;
+                case 'mg/kg':
+                    percentageValue = value / 10000;
+                    break;
+                case 'g/100g':
+                    percentageValue = value;
+                    break;
+                case 'mg/100g':
+                    percentageValue = value / 1000;
+                    break;
+            }
+
+            // Then convert from percentage to target unit
+            switch(toUnit) {
+                case 'percentage':
+                    return percentageValue;
+                case 'g/kg':
+                    return percentageValue * 10;
+                case 'mg/kg':
+                    return percentageValue * 10000;
+                case 'g/100g':
+                    return percentageValue;
+                case 'mg/100g':
+                    return percentageValue * 1000;
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('converterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isDryMatter = document.getElementById('dryMatterBasis').checked;
+            const isAshFree = document.getElementById('ashFreeBasis').checked;
+            
+            // Get all nutrient rows
+            const nutrientRows = document.querySelectorAll('.nutrient-row');
+            const results = [];
+            
+            nutrientRows.forEach(row => {
+                const label = row.querySelector('.nutrient-label').value;
+                const value = parseFloat(row.querySelector('.nutrient-value').value);
+                const moistureContent = parseFloat(row.querySelector('.nutrient-moisture').value);
+                const ashContent = isAshFree ? parseFloat(row.querySelector('.nutrient-ash').value) : 0;
+                const basis = row.querySelector('.nutrient-basis').value;
+                const inputUnit = row.querySelector('.nutrient-input-unit').value;
+                const outputUnit = row.querySelector('.nutrient-output-unit').value;
+                
+                // Convert to dry matter basis
+                let dryMatterValue = 0;
+                let ashFreeValue = 0;
+                
+                if (isDryMatter) {
+                    // For dry matter basis, we need to account for moisture in both wet and dry weight basis
+                    dryMatterValue = value * (100 / (100 - moistureContent));
+                }
+                
+                if (isAshFree) {
+                    // For ash-free basis, we need to account for both moisture and ash
+                    ashFreeValue = value * (100 / (100 - moistureContent - ashContent));
+                }
+                
+                // Convert between units
+                const finalDryMatterValue = isDryMatter ? convertUnit(dryMatterValue, inputUnit, outputUnit) : 0;
+                const finalAshFreeValue = isAshFree ? convertUnit(ashFreeValue, inputUnit, outputUnit) : 0;
+                
+                // Update the row with results
+                row.querySelector('.original-value').value = `${value.toFixed(2)} ${inputUnit}`;
+                row.querySelector('.dry-matter-value').value = isDryMatter ? `${finalDryMatterValue.toFixed(2)} ${outputUnit}` : '';
+                row.querySelector('.ash-free-value').value = isAshFree ? `${finalAshFreeValue.toFixed(2)} ${outputUnit}` : '';
+                
+                results.push({
+                    label,
+                    originalValue: `${value.toFixed(2)} ${inputUnit}`,
+                    dryMatterValue: isDryMatter ? `${finalDryMatterValue.toFixed(2)} ${outputUnit}` : '',
+                    ashFreeValue: isAshFree ? `${finalAshFreeValue.toFixed(2)} ${outputUnit}` : ''
+                });
+            });
+            
+            // Display results in table
+            const resultsBody = document.getElementById('resultsBody');
+            resultsBody.innerHTML = '';
+            
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result.label}</td>
+                    <td>${result.originalValue}</td>
+                    <td>${result.dryMatterValue}</td>
+                    <td class="ash-free-content">${result.ashFreeValue}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+            
+            document.getElementById('result').style.display = 'block';
+        });
+
+        // Download PDF
+        document.getElementById('downloadPdf').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(16);
+            doc.text('Nutrient Conversion Results', 14, 15);
+            
+            // Add conversion types
+            doc.setFontSize(12);
+            const isDryMatter = document.getElementById('dryMatterBasis').checked;
+            const isAshFree = document.getElementById('ashFreeBasis').checked;
+            let conversionTypes = [];
+            if (isDryMatter) conversionTypes.push('Dry Matter Basis');
+            if (isAshFree) conversionTypes.push('Ash-Free Dry Matter Basis');
+            doc.text(`Conversion Types: ${conversionTypes.join(' and ')}`, 14, 25);
+            
+            // Get table data
+            const tableData = [];
+            const headers = ['Nutrient', 'Original Value', 'Dry Matter Value', 'Ash-Free Value'];
+            document.querySelectorAll('#resultsBody tr').forEach(row => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach(cell => {
+                    rowData.push(cell.textContent);
+                });
+                tableData.push(rowData);
+            });
+            
+            // Generate table
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 35,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 40 },
+                    2: { cellWidth: 40 },
+                    3: { cellWidth: 40 }
+                }
+            });
+            
+            // Save PDF
+            doc.save('nutrient_conversion_results.pdf');
+        });
+    </script>
+</body>
+</html> 
