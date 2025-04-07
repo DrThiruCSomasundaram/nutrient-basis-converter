@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Convert to dry matter basis and/or ash free dry matter basis</title>
+    <title>International Community of Practice on Nutrient Composition of Aquatic Foods</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -131,13 +131,69 @@
         .download-btn:hover {
             background-color: #218838;
         }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #34495e;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+        .citation-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .citation-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .citation-text {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        .download-citation {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .license-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .license-section img {
+            margin: 10px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Convert to dry matter basis and/or ash free dry matter basis</h1>
+        <div class="header">
+            <h1>International Community of Practice on Nutrient Composition of Aquatic Foods</h1>
+            <p>Data guidelines for publishing high quality food composition data</p>
+        </div>
         <form id="converterForm">
             <div class="basis-selector">
                 <label>
@@ -151,45 +207,129 @@
             <div id="nutrientsContainer">
                 <h3>Nutrients</h3>
                 <div class="header-row">
-                    <div>Nutrient Label</div>
-                    <div>Value</div>
+                    <div>Nutrient</div>
+                    <div>Content</div>
                     <div>Moisture Content (%)</div>
                     <div class="ash-content">Ash Content (%)</div>
-                    <div>Basis</div>
-                    <div>Input Unit</div>
-                    <div>Output Unit</div>
-                    <div>Original Value</div>
-                    <div>Dry Matter Value</div>
-                    <div class="ash-free-content">Ash-Free Value</div>
+                    <div>Base</div>
+                    <div>Current Unit</div>
+                    <div>Conversion Unit</div>
+                    <div>Current Value</div>
+                    <div>Dry Matter Basis</div>
+                    <div class="ash-free-content">Ash Free Dry Matter Basis</div>
                     <div></div>
                 </div>
                 <div class="nutrient-row">
-                    <input type="text" class="nutrient-label" placeholder="e.g., Protein, Fat, Fiber" required>
-                    <input type="number" class="nutrient-value" step="0.01" required>
-                    <input type="number" class="nutrient-moisture" step="0.01" required>
-                    <input type="number" class="nutrient-ash ash-content" step="0.01">
-                    <select class="nutrient-basis">
-                        <option value="wet">Wet Weight Basis</option>
-                        <option value="dry">Dry Weight Basis</option>
+                    <input type="text" placeholder="Nutrient" class="nutrient-label">
+                    <input type="number" placeholder="Content" class="nutrient-value">
+                    <input type="number" placeholder="Moisture Content (%)" class="moisture-content">
+                    <input type="number" placeholder="Ash Content (%)" class="ash-content">
+                    <select class="basis">
+                        <option value="wet">Wet Weight Base</option>
+                        <option value="dry">Dry Weight Base</option>
                     </select>
-                    <select class="nutrient-input-unit">
-                        <option value="percentage">Percentage (%)</option>
+                    <select class="input-unit">
+                        <option value="percent">%</option>
                         <option value="g/kg">g/kg</option>
                         <option value="mg/kg">mg/kg</option>
                         <option value="g/100g">g/100g</option>
                         <option value="mg/100g">mg/100g</option>
                     </select>
-                    <select class="nutrient-output-unit">
-                        <option value="percentage">Percentage (%)</option>
+                    <select class="output-unit">
+                        <option value="percent">%</option>
                         <option value="g/kg">g/kg</option>
                         <option value="mg/kg">mg/kg</option>
                         <option value="g/100g">g/100g</option>
                         <option value="mg/100g">mg/100g</option>
                     </select>
-                    <input type="text" class="original-value" readonly>
-                    <input type="text" class="dry-matter-value" readonly>
-                    <input type="text" class="ash-free-value ash-free-content" readonly>
-                    <button type="button" class="remove-btn">Remove</button>
+                    <input type="text" readonly placeholder="Current Value" class="original-value">
+                    <input type="text" readonly placeholder="Dry Matter Basis" class="dry-matter-value">
+                    <input type="text" readonly placeholder="Ash Free Dry Matter Basis" class="ash-free-value">
+                    <button type="button" class="remove-nutrient">×</button>
+                </div>
+                <div class="nutrient-row">
+                    <input type="text" placeholder="Nutrient" class="nutrient-label">
+                    <input type="number" placeholder="Content" class="nutrient-value">
+                    <input type="number" placeholder="Moisture Content (%)" class="moisture-content">
+                    <input type="number" placeholder="Ash Content (%)" class="ash-content">
+                    <select class="basis">
+                        <option value="wet">Wet Weight Base</option>
+                        <option value="dry">Dry Weight Base</option>
+                    </select>
+                    <select class="input-unit">
+                        <option value="percent">%</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <select class="output-unit">
+                        <option value="percent">%</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <input type="text" readonly placeholder="Current Value" class="original-value">
+                    <input type="text" readonly placeholder="Dry Matter Basis" class="dry-matter-value">
+                    <input type="text" readonly placeholder="Ash Free Dry Matter Basis" class="ash-free-value">
+                    <button type="button" class="remove-nutrient">×</button>
+                </div>
+                <div class="nutrient-row">
+                    <input type="text" placeholder="Nutrient" class="nutrient-label">
+                    <input type="number" placeholder="Content" class="nutrient-value">
+                    <input type="number" placeholder="Moisture Content (%)" class="moisture-content">
+                    <input type="number" placeholder="Ash Content (%)" class="ash-content">
+                    <select class="basis">
+                        <option value="wet">Wet Weight Base</option>
+                        <option value="dry">Dry Weight Base</option>
+                    </select>
+                    <select class="input-unit">
+                        <option value="percent">%</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <select class="output-unit">
+                        <option value="percent">%</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <input type="text" readonly placeholder="Current Value" class="original-value">
+                    <input type="text" readonly placeholder="Dry Matter Basis" class="dry-matter-value">
+                    <input type="text" readonly placeholder="Ash Free Dry Matter Basis" class="ash-free-value">
+                    <button type="button" class="remove-nutrient">×</button>
+                </div>
+                <div class="nutrient-row">
+                    <input type="text" placeholder="Nutrient" class="nutrient-label">
+                    <input type="number" placeholder="Content" class="nutrient-value">
+                    <input type="number" placeholder="Moisture Content (%)" class="moisture-content">
+                    <input type="number" placeholder="Ash Content (%)" class="ash-content">
+                    <select class="basis">
+                        <option value="wet">Wet Weight Base</option>
+                        <option value="dry">Dry Weight Base</option>
+                    </select>
+                    <select class="input-unit">
+                        <option value="percent">%</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <select class="output-unit">
+                        <option value="percent">%</option>
+                        <option value="g/kg">g/kg</option>
+                        <option value="mg/kg">mg/kg</option>
+                        <option value="g/100g">g/100g</option>
+                        <option value="mg/100g">mg/100g</option>
+                    </select>
+                    <input type="text" readonly placeholder="Current Value" class="original-value">
+                    <input type="text" readonly placeholder="Dry Matter Basis" class="dry-matter-value">
+                    <input type="text" readonly placeholder="Ash Free Dry Matter Basis" class="ash-free-value">
+                    <button type="button" class="remove-nutrient">×</button>
                 </div>
             </div>
 
@@ -199,19 +339,48 @@
 
         <div id="result" class="result">
             <h3>Results:</h3>
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>Nutrient</th>
-                        <th>Original Value</th>
-                        <th>Dry Matter Value</th>
-                        <th class="ash-free-content">Ash-Free Value</th>
-                    </tr>
-                </thead>
-                <tbody id="resultsBody">
-                </tbody>
-            </table>
+            <div class="results-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Content</th>
+                            <th>Moisture Content (%)</th>
+                            <th>Ash Content (%)</th>
+                            <th>Base</th>
+                            <th>Current Unit</th>
+                            <th>Conversion Unit</th>
+                            <th>Current Value</th>
+                            <th>Dry Matter Basis</th>
+                            <th>Ash Free Dry Matter Basis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                    </tbody>
+                </table>
+            </div>
             <button type="button" id="downloadPdf" class="download-btn">Download Results as PDF</button>
+        </div>
+
+        <div class="citation-section">
+            <h3>How to Cite</h3>
+            <div class="citation-text">
+                <p>International Community of Practice on Nutrient Composition of Aquatic Foods. (2025). Nutrient Basis Converter [Computer software]. https://drthirucsomasundaram.github.io/nutrient-basis-converter/</p>
+            </div>
+            <div class="download-citation">
+                <button type="button" id="downloadRis" class="download-btn">Download RIS File</button>
+            </div>
+        </div>
+
+        <div class="license-section">
+            <h3>License</h3>
+            <p>This work is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0 International License</a>.</p>
+            <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="Creative Commons">
+            <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="Attribution">
+        </div>
+
+        <div class="footer">
+            <p>© 2025 International Community of Practice on Nutrient Composition of Aquatic Foods</p>
         </div>
     </div>
 
@@ -230,41 +399,41 @@
             const newRow = document.createElement('div');
             newRow.className = 'nutrient-row';
             newRow.innerHTML = `
-                <input type="text" class="nutrient-label" placeholder="e.g., Protein, Fat, Fiber" required>
-                <input type="number" class="nutrient-value" step="0.01" required>
-                <input type="number" class="nutrient-moisture" step="0.01" required>
-                <input type="number" class="nutrient-ash ash-content" step="0.01">
-                <select class="nutrient-basis">
-                    <option value="wet">Wet Weight Basis</option>
-                    <option value="dry">Dry Weight Basis</option>
+                <input type="text" placeholder="Nutrient" class="nutrient-label">
+                <input type="number" placeholder="Content" class="nutrient-value">
+                <input type="number" placeholder="Moisture Content (%)" class="moisture-content">
+                <input type="number" placeholder="Ash Content (%)" class="ash-content">
+                <select class="basis">
+                    <option value="wet">Wet Weight Base</option>
+                    <option value="dry">Dry Weight Base</option>
                 </select>
-                <select class="nutrient-input-unit">
-                    <option value="percentage">Percentage (%)</option>
+                <select class="input-unit">
+                    <option value="percent">%</option>
                     <option value="g/kg">g/kg</option>
                     <option value="mg/kg">mg/kg</option>
                     <option value="g/100g">g/100g</option>
                     <option value="mg/100g">mg/100g</option>
                 </select>
-                <select class="nutrient-output-unit">
-                    <option value="percentage">Percentage (%)</option>
+                <select class="output-unit">
+                    <option value="percent">%</option>
                     <option value="g/kg">g/kg</option>
                     <option value="mg/kg">mg/kg</option>
                     <option value="g/100g">g/100g</option>
                     <option value="mg/100g">mg/100g</option>
                 </select>
-                <input type="text" class="original-value" readonly>
-                <input type="text" class="dry-matter-value" readonly>
-                <input type="text" class="ash-free-value ash-free-content" readonly>
-                <button type="button" class="remove-btn">Remove</button>
+                <input type="text" readonly placeholder="Current Value" class="original-value">
+                <input type="text" readonly placeholder="Dry Matter Basis" class="dry-matter-value">
+                <input type="text" readonly placeholder="Ash Free Dry Matter Basis" class="ash-free-value">
+                <button type="button" class="remove-nutrient">×</button>
             `;
             container.appendChild(newRow);
         });
 
         // Remove nutrient row
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-btn')) {
+            if (e.target.classList.contains('remove-nutrient')) {
                 const row = e.target.parentElement;
-                if (document.querySelectorAll('.nutrient-row').length > 1) {
+                if (document.querySelectorAll('.nutrient-row').length > 4) {
                     row.remove();
                 }
             }
@@ -321,11 +490,11 @@
             nutrientRows.forEach(row => {
                 const label = row.querySelector('.nutrient-label').value;
                 const value = parseFloat(row.querySelector('.nutrient-value').value);
-                const moistureContent = parseFloat(row.querySelector('.nutrient-moisture').value);
-                const ashContent = isAshFree ? parseFloat(row.querySelector('.nutrient-ash').value) : 0;
-                const basis = row.querySelector('.nutrient-basis').value;
-                const inputUnit = row.querySelector('.nutrient-input-unit').value;
-                const outputUnit = row.querySelector('.nutrient-output-unit').value;
+                const moistureContent = parseFloat(row.querySelector('.moisture-content').value);
+                const ashContent = isAshFree ? parseFloat(row.querySelector('.ash-content').value) : 0;
+                const basis = row.querySelector('.basis').value;
+                const inputUnit = row.querySelector('.input-unit').value;
+                const outputUnit = row.querySelector('.output-unit').value;
                 
                 // Convert to dry matter basis
                 let dryMatterValue = 0;
@@ -376,14 +545,44 @@
             document.getElementById('result').style.display = 'block';
         });
 
-        // Download PDF
+        // Download RIS file
+        document.getElementById('downloadRis').addEventListener('click', function() {
+            const risContent = `TY  - COMP
+TI  - Nutrient Basis Converter
+AU  - International Community of Practice on Nutrient Composition of Aquatic Foods
+AU  - [Working Group]
+PY  - 2025
+UR  - https://drthirucsomasundaram.github.io/nutrient-basis-converter/
+ER  - `;
+            
+            const blob = new Blob([risContent], { type: 'application/x-research-info-systems' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'nutrient_basis_converter.ris';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        });
+
+        // Update PDF download to include citation
         document.getElementById('downloadPdf').addEventListener('click', function() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
             // Add title
             doc.setFontSize(16);
-            doc.text('Nutrient Conversion Results', 14, 15);
+            doc.text('International Community of Practice on Nutrient Composition of Aquatic Foods', 14, 15);
+            doc.setFontSize(12);
+            doc.text('Nutrient Conversion Results', 14, 25);
+            
+            // Add citation
+            doc.setFontSize(10);
+            doc.text('Citation:', 14, 35);
+            doc.text('International Community of Practice on Nutrient Composition of Aquatic Foods. (2025).', 14, 42);
+            doc.text('Nutrient Basis Converter [Computer software].', 14, 49);
+            doc.text('https://github.com/DrThiruCSomasundaram/nutrient-basis-converter', 14, 56);
             
             // Add conversion types
             doc.setFontSize(12);
@@ -392,11 +591,11 @@
             let conversionTypes = [];
             if (isDryMatter) conversionTypes.push('Dry Matter Basis');
             if (isAshFree) conversionTypes.push('Ash-Free Dry Matter Basis');
-            doc.text(`Conversion Types: ${conversionTypes.join(' and ')}`, 14, 25);
+            doc.text(`Conversion Types: ${conversionTypes.join(' and ')}`, 14, 66);
             
             // Get table data
             const tableData = [];
-            const headers = ['Nutrient', 'Original Value', 'Dry Matter Value', 'Ash-Free Value'];
+            const headers = ['Nutrient', 'Content', 'Moisture Content (%)', 'Ash Content (%)', 'Base', 'Current Unit', 'Conversion Unit', 'Current Value', 'Dry Matter Basis', 'Ash Free Dry Matter Basis'];
             document.querySelectorAll('#resultsBody tr').forEach(row => {
                 const rowData = [];
                 row.querySelectorAll('td').forEach(cell => {
@@ -409,16 +608,27 @@
             doc.autoTable({
                 head: [headers],
                 body: tableData,
-                startY: 35,
+                startY: 76,
                 theme: 'grid',
-                styles: { fontSize: 10 },
+                styles: { fontSize: 8 },
                 columnStyles: {
-                    0: { cellWidth: 40 },
-                    1: { cellWidth: 40 },
-                    2: { cellWidth: 40 },
-                    3: { cellWidth: 40 }
+                    0: { cellWidth: 30 },
+                    1: { cellWidth: 20 },
+                    2: { cellWidth: 25 },
+                    3: { cellWidth: 25 },
+                    4: { cellWidth: 25 },
+                    5: { cellWidth: 25 },
+                    6: { cellWidth: 25 },
+                    7: { cellWidth: 25 },
+                    8: { cellWidth: 25 },
+                    9: { cellWidth: 25 }
                 }
             });
+            
+            // Add license information
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(10);
+            doc.text('This work is licensed under a Creative Commons Attribution 4.0 International License.', 14, finalY);
             
             // Save PDF
             doc.save('nutrient_conversion_results.pdf');
